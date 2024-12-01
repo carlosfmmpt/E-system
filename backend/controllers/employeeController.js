@@ -1,3 +1,5 @@
+{/*
+// Misma funcion exportando diferente.
 const EmployeeModel = require('../models/employeeModel');
 
 const EmployeeController = {
@@ -39,4 +41,49 @@ const EmployeeController = {
   },
 };
 
-module.exports = EmployeeController;
+module.exports = EmployeeController;*/}
+
+
+
+
+const EmployeeModel = require('../models/employeeModel');
+
+exports.getAllEmployees = async (req, res) => {
+  try {
+    const results = await EmployeeModel.getAll();
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.createEmployee = async (req, res) => {
+  try {
+    const employee = req.body;
+    const results = await EmployeeModel.create(employee);
+    res.status(201).json({ id: results.insertId, ...employee });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.updateEmployee = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const employee = req.body;
+    await EmployeeModel.update(id, employee);
+    res.json({ id, ...employee });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.deleteEmployee = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await EmployeeModel.delete(id);
+    res.json({ message: 'Empleado eliminado con éxito' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
